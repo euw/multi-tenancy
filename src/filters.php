@@ -1,6 +1,6 @@
 <?php
 
-Route::filter('auth.tenant', function () {
+Route::filter('multi-tenancy.auth', function () {
     $context = App::make('Euw\MultiTenancy\Contexts\Context');
 
     if (Auth::guest()) return Redirect::guest('login');
@@ -8,7 +8,7 @@ Route::filter('auth.tenant', function () {
     $context->set(Auth::user());
 });
 
-Route::filter('selectTenant', function () {
+Route::filter('multi-tenancy.selectTenant', function () {
     $server = explode('.', Request::server('HTTP_HOST'));
 
     if ( count($server) == 3 ) {
@@ -19,6 +19,8 @@ Route::filter('selectTenant', function () {
         if ($tenant) {
             $context = App::make('Euw\MultiTenancy\Contexts\Context');
             $context->set($tenant);
+        } else {
+            return Redirect::to(Request::secure() ? 'https://' : 'http://' . 'www.' . Config::get('app.domain'));
         }
     }
 
