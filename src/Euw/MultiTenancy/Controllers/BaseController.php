@@ -1,6 +1,8 @@
 <?php namespace Euw\MultiTenancy\Controllers;
 
+use App;
 use Controller;
+use View;
 
 class BaseController extends Controller {
 
