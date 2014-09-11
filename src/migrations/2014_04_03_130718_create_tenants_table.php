@@ -17,7 +17,7 @@ class CreateTenantsTable extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->string('subdomain')->unique();
-            $table->string('fb_page_id');
+            $table->string('fb_page_id')->nullable();
             $table->boolean('confirmed')->default(false);
             $table->tinyInteger('active')->default(0);
             $table->timestamps();
