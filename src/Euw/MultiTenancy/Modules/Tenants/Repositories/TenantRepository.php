@@ -211,4 +211,23 @@ abstract class TenantRepository extends AbstractRepository
         return $this->scopeRelationship($entity)->where($key, '=', $value)->get();
     }
 
+    public function createThroughColumn(array $with = array())
+    {
+        $this->scope = $this->context;
+        if ($this->scope->has()) {
+            return $this->model->create(array_merge($with, [
+                $this->scope->column() => $this->scope->id()
+            ]));
+        } else {
+            return null;
+        }
+    }
+
+    public function create(array $with = array())
+    {
+        return $this->createThroughColumn($with);
+    }
+
+
+
 }
