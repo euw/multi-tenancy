@@ -22,14 +22,16 @@ Route::filter('multi-tenancy.selectTenant', function ()
 
         $tenant = Tenant::where('subdomain', '=', $subdomain)->first();
 
-        if (!$tenant->active) throw new TenantIsNotActiveException;
-
-        if ($tenant) {
-            $context = App::make('Euw\MultiTenancy\Contexts\Context');
-            $context->set($tenant);
-        } else {
+        if ( ! $tenant ) {
             throw new TenantNotFoundException;
         }
+
+        if ( ! $tenant->active ) {
+            throw new TenantIsNotActiveException;
+        }
+
+        $context = App::make( 'Euw\MultiTenancy\Contexts\Context' );
+        $context->set( $tenant );
     }
 
 });
