@@ -17,6 +17,10 @@ Route::filter('multi-tenancy.selectTenant', function ()
 {
     $server = explode('.', Request::server('HTTP_HOST'));
 
+    if ($server[0] == 'apps') {
+        array_shift($server);
+    }
+
     if ( count($server) == 3 ) {
         $subdomain = $server[0];
 

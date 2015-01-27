@@ -70,6 +70,19 @@ abstract class AbstractRepository
      * @param array $with
      * @return Illuminate\Database\Eloquent\Collection
      */
+    public function first(array $with = array())
+    {
+        $entity = $this->make($with);
+
+        return $entity->first();
+    }
+
+    /**
+     * Retrieve all entities
+     *
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function all(array $with = array())
     {
         $entity = $this->make($with);
