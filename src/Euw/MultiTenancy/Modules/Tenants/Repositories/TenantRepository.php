@@ -42,6 +42,19 @@ abstract class TenantRepository extends AbstractRepository
     }
 
     /**
+     * Retrieve first entity through a scoped column
+     *
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function firstThroughColumn(array $with = array())
+    {
+        $entity = $this->make($with);
+
+        return $this->scopeColumn($entity)->first();
+    }
+
+    /**
      * Retrieve all entities through a scoped column
      *
      * @param array $with
@@ -210,5 +223,108 @@ abstract class TenantRepository extends AbstractRepository
 
         return $this->scopeRelationship($entity)->where($key, '=', $value)->get();
     }
+
+    public function createThroughColumn(array $with = array())
+    {
+        $this->scope = $this->context;
+        if ($this->scope->has()) {
+            return $this->model->create(array_merge($with, [
+                $this->scope->column() => $this->scope->id()
+            ]));
+        } else {
+            return null;
+        }
+    }
+
+    public function create(array $with = array())
+    {
+        return $this->createThroughColumn($with);
+    }
+
+    /**
+     * Return first
+     *
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function first(array $with = array())
+    {
+        return $this->firstThroughColumn($with);
+    }
+
+    /**
+     * Return all
+     *
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function all(array $with = array())
+    {
+        return $this->allThroughColumn($with);
+    }
+
+    /**
+     * Return a single
+     *
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function find($id, array $with = array())
+    {
+        return $this->findThroughColumn($id, $with);
+    }
+
+    /**
+     * Get Results by Page
+     *
+     * @param int $page
+     * @param int $limit
+     * @param array $with
+     * @return StdClass Object with $items and $totalItems for pagination
+     */
+    public function getByPage($page = 1, $limit = 10, $with = array())
+    {
+        return $this->getByPageThroughColumn($page, $limit, $with);
+    }
+
+    /**
+     * Search for a single result by key and value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function getFirstBy($key, $value, array $with = array())
+    {
+        return $this->getFirstByThroughColumn($key, $value, $with);
+    }
+
+    /**
+     * Search for many results by key and value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param array $with
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getManyBy($key, $value, array $with = array())
+    {
+        return $this->getManyByThroughColumn($key, $value, $with);
+    }
+
+    public function whereNotInThroughColumn($key, array $values, array $with = array())
+    {
+        $entity = $this->make($with);
+
+        return $this->scopeColumn($entity)->whereNotIn($key, $values);
+    }
+
+    public function whereNotIn($key, array $values, array $with = array())
+    {
+        return $this->whereNotInThroughColumn($key, $values, $with);
+    }
+
+
 
 }
